@@ -46,7 +46,6 @@ def main(nboots=1):
             xs = walk(cohs, (mu, 1, sigma), T, N)
             xs = absorb(xs, (lb, ub))
             pcor = pcorrect(xs)
-            # plot_vs_coh(xs, pcor, cohs)
             res = fit(cohs, pcor, N)
             plot_pmf(cohs, pcor, res)
             reses.append(res)

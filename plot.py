@@ -12,18 +12,20 @@ def color_list(n, cmap=None):
     return colors*(n/len(colors)) + colors[:n%len(colors)]
 
 def plot_pmf(cohs, pcor, res):
-    cmap = color_list(len(res)+2)
+    cmap = color_list(len(res)+1, 'cool')
     xs = np.array(cohs)
     xsf = np.linspace(min(xs), max(xs), 50)
     for i, (theta, thresh) in enumerate(res):
         plt.scatter(cohs, pcor[i, :]/100.0, color=cmap[i])
         plt.plot(xsf, F(xsf, theta), color=cmap[i], linestyle='-')
+    plt.xlim([0, None])
+    plt.ylim([0.45, 1.05])
     plt.xlabel('signal strength')
-    plt.ylabel('percent correct')
+    plt.ylabel('accuracy')
     plt.show()
 
 def plot_pmf_thresh(reses):
-    cmap = color_list(len(reses)+2)
+    cmap = color_list(len(reses)+5, 'Greens')
     for i, res in enumerate(reses):
         durs = np.arange(1, len(res)+1)
         ts = np.array([thresh for theta, thresh in res])
@@ -34,6 +36,19 @@ def plot_pmf_thresh(reses):
     plt.ylabel('75% threshold (coh)')
     plt.show()
 
+def plot_particles(xs, cohs):
+    T0, N0, ncohs = xs.shape
+    xs0 = xrange(T0)
+    cmap = color_list(len(cohs)+2)
+    for i in xrange(ncohs):
+        label = cohs[i]
+        for j in xrange(N0):
+            label = label if j == 0 else None
+            plt.plot(xs0, xs[:, j, i], label=label, color=cmap[i])
+    plt.xlabel('duration')
+    plt.ylabel('particle position')
+    plt.show()
+
 def plot_vs_dur(xs, pcor, res, cohs):
     T0, N0, ncohs = xs.shape
     xs0 = xrange(T0)
@@ -41,16 +56,13 @@ def plot_vs_dur(xs, pcor, res, cohs):
     for i in xrange(ncohs):
         label = cohs[i]
         sol = res[i]
-        plt.subplot(212)
-        plt.plot(xs0, pcor[:, i]/100.0, label=label, color=cmap[i])
+        plt.scatter(xs0, pcor[:, i]/100.0, label=label, color=cmap[i])
         plt.plot(xs0, saturating_exp(xs0, sol[0], sol[1]), linestyle='-', color=cmap[i])
-        plt.subplot(211)
-        for j in xrange(N0):
-            label = label if j == 0 else None
-            plt.plot(xs0, xs[:, j, i], label=label, color=cmap[i])
-    plt.subplot(212)
-    plt.ylim([50, 100])
-    plt.legend()
+    plt.xlim([0, None])
+    plt.ylim([0.45, 1.05])
+    plt.xlabel('duration')
+    plt.ylabel('accuracy (i.e. \% of particle positions > 0)')
+    plt.legend(loc='lower right')
     plt.show()
 
 def plot_res(df, xkey, ykey, gkey, agg=True):

@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 from sat_exp import fit_sat_exp
-from plot import plot_vs_dur, plot_res
+from plot import plot_vs_dur, plot_res, plot_particles
 from model import walk, absorb, pcorrect
 
 cohs = [0.03, 0.06, 0.12, 0.25, 0.5] # signal strengths--multiply by K to get mean drift rate
@@ -29,7 +29,7 @@ def org_res(out):
         pts.extend(pt)
     return pd.DataFrame(pts, columns=['mean', 'sig', 'A', 'T'])
 
-def main(nboots=20):
+def main(nboots=1):
     means = np.array(cohs)*K
     # sigmas = 1/np.sqrt(K*np.array(cohs))
     out = {}
@@ -41,7 +41,8 @@ def main(nboots=20):
             xs = absorb(xs, (LB, UB))
             pcor = pcorrect(xs)
             res = fit_sat_exp(xs, pcor)
-            # plot_vs_dur(xs, pcor, res, cohs)
+            # plot_particles(xs, cohs)
+            plot_vs_dur(xs, pcor, res, cohs)
             out = collect_res(out, res, means, S)
     df = org_res(out)
     plot_res(df, 'mean', 'A', 'sig')
