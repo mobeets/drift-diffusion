@@ -1,18 +1,37 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.stats import logistic
 from sat_exp import saturating_exp
+
+F = lambda x, (a,b,l): 0.5 + (1-0.5-l)*logistic.cdf(x, loc=a, scale=b)
+Finv = lambda thresh_val, (a,b,l): logistic.ppf((thresh_val - 0.5)/(1-0.5-l), loc=a, scale=b)
 
 def color_list(n, cmap=None):
     cm = plt.get_cmap("RdYlGn" if cmap is None else cmap)
     colors = [cm(i) for i in np.linspace(0, 1, n)]
     return colors*(n/len(colors)) + colors[:n%len(colors)]
 
-def plot_vs_coh(xs, pcor, cohs):
-    T0, N0, ncohs = xs.shape
-    cmap = color_list(T0+2)
-    for i in xrange(T0):
-        plt.plot(cohs, pcor[i, :]/100.0, label=i, color=cmap[i])
-    # plt.xscale('log')
+def plot_pmf(cohs, pcor, res):
+    cmap = color_list(len(res)+2)
+    xs = np.array(cohs)
+    xsf = np.linspace(min(xs), max(xs), 50)
+    for i, (theta, thresh) in enumerate(res):
+        plt.scatter(cohs, pcor[i, :]/100.0, color=cmap[i])
+        plt.plot(xsf, F(xsf, theta), color=cmap[i], linestyle='-')
+    plt.xlabel('signal strength')
+    plt.ylabel('percent correct')
+    plt.show()
+
+def plot_pmf_thresh(reses):
+    cmap = color_list(len(reses)+2)
+    for i, res in enumerate(reses):
+        durs = np.arange(1, len(res)+1)
+        ts = np.array([thresh for theta, thresh in res])
+        plt.scatter(1000*durs, 100*ts, color=cmap[i])
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.xlabel('duration (ms)')
+    plt.ylabel('75% threshold (coh)')
     plt.show()
 
 def plot_vs_dur(xs, pcor, res, cohs):
