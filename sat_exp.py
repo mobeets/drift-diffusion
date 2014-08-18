@@ -21,3 +21,12 @@ def fit(xs, ys, guess = (1.0, 10.0), maxtries=5, method='TNC'):
         soln = minimize(objf, guess, method=method, bounds=bounds, constraints=constraints)
         c += 1
     return soln['x'] if soln['success'] else (None, None)
+
+def fit_sat_exp(xs, pcor):
+    T0, N0, ncohs = xs.shape
+    xs0 = xrange(T0)
+    res = {}
+    for i in xrange(ncohs):
+        ys0 = pcor[:, i]/100.0
+        res[i] = fit(xs0, ys0)
+    return res
