@@ -18,8 +18,9 @@ def plot_pmf(cohs, pcor, res):
     for i, (theta, thresh) in enumerate(res):
         plt.scatter(cohs, pcor[i, :]/100.0, color=cmap[i])
         plt.plot(xsf, F(xsf, theta), color=cmap[i], linestyle='-')
-    plt.xlim([0, None])
+    plt.xlim([0.01, None])
     plt.ylim([0.45, 1.05])
+    plt.xscale('log')
     plt.xlabel('signal strength')
     plt.ylabel('accuracy')
     plt.show()

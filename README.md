@@ -1,10 +1,11 @@
 
 __Goal__: Simulating drift diffusion processes with varying drift and diffusion rates.
+
 __Why__: To model 2AFC discrimination decisions in trials of varying stimulus strengths and durations.
 
 ## The model
 
-On a given time step, a particle's next position is a sample from a gaussian with mean mu ("drift rate") and standard deviation sigma ("diffusion rate").
+On a given time step, a particle's next position is a sample from a gaussian with mean mu ("drift rate") and standard deviation sigma ("diffusion rate"):
 
 x(t+1) = x(t) + N(mu, sigma)
 
@@ -27,5 +28,7 @@ The image below shows the subjects' accuracy as a function of stimulus duration,
 ## Accuracy as a function of stimulus duration
 
 __Usage__: `python sim_pmf.py`
+
+You can also view the accuracy as a function of increasing stimulus duration. In the plot below, the color gradient describes trials of increasing stimulus duration, where pink is the longest duration. Psychometric functions were fit using `psignifit`.
 
 ![pmf](/images/pmf.png?raw=true "pmf")
