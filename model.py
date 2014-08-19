@@ -35,5 +35,5 @@ def walk(cohs, (drift, sigma), T, N, TND=0):
     xs = np.zeros([T+1, N, len(cohs)])
     diffuse = sigma*np.random.normal(0, 1, [T, N, len(cohs)])
     for i in xrange(T):
-        xs[i+1] = xs[i] + diffuse[i] + (drift if i > TND else 0)
+        xs[i+1] = xs[i] + diffuse[i] + (drift if i >= TND else 0)
     return xs
