@@ -4,21 +4,15 @@ def pcorrect(xs):
     """
     calculate percent correct at each coherence and duration by finding the proportion of particles above 0
     """
-    T0, N0, ncohs = xs.shape
-    pcor = np.zeros([T0, ncohs])
-    for i in xrange(ncohs):
-        for t in xrange(T0):
-            pcor[t, i] = (100.0*sum(xs[t, :, i] > 0)) / N0
-        pcor[0, i] = 50.0
-    return pcor
+    return np.mean(xs > 0, 1)
 
 def absorb(xs, (lb, ub)):
     """
     fix random walks so they stick at bounds
     """
-    T0, N0, ncohs = xs.shape
+    T, N, ncohs = xs.shape
     for i in xrange(ncohs):
-        for j in xrange(N0):
+        for j in xrange(N):
             lta = np.where(xs[:, j, i] < lb)[0]
             gta = np.where(xs[:, j, i] > ub)[0]
             ind = None
@@ -33,14 +27,13 @@ def absorb(xs, (lb, ub)):
                 xs[gta[0]:, j, i] = ub
     return xs
 
-def walk(cohs, (means, sigmas, S), T, N):
+def walk(cohs, (drift, sigma), T, N, TND=0):
     """
     generate random walks
+    TND is delay before any non-zero drift rates kick in
     """
-    ncohs = len(cohs)
-    vs = sigmas*np.random.normal(1, S, [T, N, ncohs]) + means
-    xs = np.zeros([T+1, N, ncohs])
-    xs[0] = np.zeros([N, ncohs])
+    xs = np.zeros([T+1, N, len(cohs)])
+    diffuse = sigma*np.random.normal(0, 1, [T, N, len(cohs)])
     for i in xrange(T):
-        xs[i+1] = xs[i] + vs[i]
+        xs[i+1] = xs[i] + diffuse[i] + (drift if i > TND else 0)
     return xs

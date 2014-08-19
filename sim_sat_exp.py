@@ -7,7 +7,7 @@ from model import walk, absorb, pcorrect
 
 cohs = [0.03, 0.06, 0.12, 0.25, 0.5] # signal strengths--multiply by K to get mean drift rate
 K = 8 # base mean drift rate
-Ss = [12, 18] # sigma of random walk for two different conditions (e.g. 2D/3D)
+sigmas = [12, 18] # sigma of random walk for two different conditions (e.g. 2D/3D)
 LB, UB = -250, 250 # bounds of walk
 N = 200 # number of trials per mean; more means smaller error bars
 T = 100 # number of timesteps; has effect up until time where all particles have reached bound
@@ -30,20 +30,19 @@ def org_res(out):
     return pd.DataFrame(pts, columns=['mean', 'sig', 'A', 'T'])
 
 def main(nboots=1):
-    means = np.array(cohs)*K
-    # sigmas = 1/np.sqrt(K*np.array(cohs))
+    drifts = np.array(cohs)*K
     out = {}
-    for S in Ss:
-        print 'Walking for {0} timesteps with means {1}, sigmas {2}'.format(T, means, S)
+    for sigma in sigmas:
+        print 'Walking for {0} timesteps with drifts {1}, sigmas {2}'.format(T, drifts, sigma)
         print '{0} trials per mean.'.format(N)
         for _ in xrange(nboots):
-            xs = walk(cohs, (means, 1, S), T, N)
+            xs = walk(cohs, (drifts, sigma), T, N)
             xs = absorb(xs, (LB, UB))
             pcor = pcorrect(xs)
             res = fit_sat_exp(xs, pcor)
             # plot_particles(xs, cohs)
             plot_vs_dur(xs, pcor, res, cohs)
-            out = collect_res(out, res, means, S)
+            out = collect_res(out, res, drifts, sigma)
     df = org_res(out)
     plot_res(df, 'mean', 'A', 'sig')
     plot_res(df, 'mean', 'T', 'sig')

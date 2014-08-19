@@ -26,11 +26,11 @@ def plot_pmf(cohs, pcor, res):
     plt.show()
 
 def plot_pmf_thresh(reses):
-    cmap = color_list(len(reses)+5, 'Greens')
+    cmap = color_list(len(reses)+1, 'Greens')
     for i, res in enumerate(reses):
         durs = np.arange(1, len(res)+1)
         ts = np.array([thresh for theta, thresh in res])
-        plt.scatter(1000*durs, 100*ts, color=cmap[i])
+        plt.scatter(1000*durs, 100*ts, color=cmap[i+1])
     plt.xscale('log')
     plt.yscale('log')
     plt.xlabel('duration (ms)')
