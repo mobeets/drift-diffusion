@@ -11,7 +11,7 @@ x(t+1) = x(t) + N(mu, sigma)
 
 Also, if at any time t0 a particle reaches either the upper or lower bound, x(t+1) = x(t) for all t > t0.
 
-In the decision model, each trial's decision is a function of the position of a single particle, where its drift rate is proportional to the signal strength on that trial. In a trial of duration t, the subject responds "Signal present / Yes" if x(t) > 0, and "Signal absent / No" otherwise. (Note that in this simulation the drift rates are all positive, and the correct response is always "Signal present / Yes".)
+In the decision model, each trial's decision is a function of the position of a single particle, where its drift rate is proportional to the signal strength on that trial. In a trial of duration t, the subject responds "Signal present / Yes" if x(t) > 0, and "Signal absent / No" otherwise. (Note that in this simulation the drift rates are all positive, and the correct response is always "Signal present / Yes".) See [this pdf](https://www.princeton.edu/mae/people/faculty/holmes/lectures/DDecis-09.pdf) for more detail.
 
 In the image below, the plot is of all simulated particle positions as a function of time, x(t), where warmer colors represent drift rates closer to zero.
 
